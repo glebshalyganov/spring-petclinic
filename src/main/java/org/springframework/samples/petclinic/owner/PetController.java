@@ -15,6 +15,7 @@
  */
 package org.springframework.samples.petclinic.owner;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
@@ -62,6 +63,7 @@ class PetController {
 		dataBinder.setValidator(new PetValidator());
 	}
 
+	@PreAuthorize("hasAnyRole(@roles.ADMIN, @roles.VET)")
 	@GetMapping("/pets/new")
 	public String initCreationForm(Owner owner, ModelMap model) {
 		Pet pet = new Pet();
@@ -70,6 +72,7 @@ class PetController {
 		return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
 	}
 
+	@PreAuthorize("hasAnyRole(@roles.ADMIN, @roles.VET)")
 	@PostMapping("/pets/new")
 	public String processCreationForm(Owner owner, @Valid Pet pet, BindingResult result, ModelMap model) {
 		if (StringUtils.hasLength(pet.getName()) && pet.isNew() && owner.getPet(pet.getName(), true) != null) {
@@ -86,6 +89,7 @@ class PetController {
 		}
 	}
 
+	@PreAuthorize("hasAnyRole(@roles.ADMIN, @roles.VET)")
 	@GetMapping("/pets/{petId}/edit")
 	public String initUpdateForm(Owner owner, @PathVariable("petId") int petId, ModelMap model) {
 		Pet pet = owner.getPet(petId);
@@ -93,6 +97,7 @@ class PetController {
 		return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
 	}
 
+	@PreAuthorize("hasAnyRole(@roles.ADMIN, @roles.VET)")
 	@PostMapping("/pets/{petId}/edit")
 	public String processUpdateForm(@Valid Pet pet, BindingResult result, Owner owner, ModelMap model) {
 		if (result.hasErrors()) {

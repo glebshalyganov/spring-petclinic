@@ -15,14 +15,10 @@
  */
 package org.springframework.samples.petclinic.owner;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.validation.Valid;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -33,6 +29,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.validation.Valid;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Juergen Hoeller
@@ -56,6 +56,7 @@ class OwnerController {
 		dataBinder.setDisallowedFields("id");
 	}
 
+	@PreAuthorize("hasRole(@roles.ADMIN)")
 	@GetMapping("/owners/new")
 	public String initCreationForm(Map<String, Object> model) {
 		Owner owner = new Owner();
@@ -63,6 +64,7 @@ class OwnerController {
 		return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
 	}
 
+	@PreAuthorize("hasRole(@roles.ADMIN)")
 	@PostMapping("/owners/new")
 	public String processCreationForm(@Valid Owner owner, BindingResult result) {
 		if (result.hasErrors()) {
@@ -74,12 +76,14 @@ class OwnerController {
 		}
 	}
 
+	@PreAuthorize("hasRole(@roles.ADMIN)")
 	@GetMapping("/owners/find")
 	public String initFindForm(Map<String, Object> model) {
 		model.put("owner", new Owner());
 		return "owners/findOwners";
 	}
 
+	@PreAuthorize("hasRole(@roles.ADMIN)")
 	@GetMapping("/owners")
 	public String processFindForm(@RequestParam(defaultValue = "1") int page, Owner owner, BindingResult result,
 			Model model) {
@@ -127,6 +131,7 @@ class OwnerController {
 
 	}
 
+	@PreAuthorize("hasRole(@roles.ADMIN)")
 	@GetMapping("/owners/{ownerId}/edit")
 	public String initUpdateOwnerForm(@PathVariable("ownerId") int ownerId, Model model) {
 		Owner owner = this.owners.findById(ownerId);
@@ -134,6 +139,7 @@ class OwnerController {
 		return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
 	}
 
+	@PreAuthorize("hasRole(@roles.ADMIN)")
 	@PostMapping("/owners/{ownerId}/edit")
 	public String processUpdateOwnerForm(@Valid Owner owner, BindingResult result,
 			@PathVariable("ownerId") int ownerId) {
@@ -152,6 +158,7 @@ class OwnerController {
 	 * @param ownerId the ID of the owner to display
 	 * @return a ModelMap with the model attributes for the view
 	 */
+	@PreAuthorize("hasRole(@roles.ADMIN)")
 	@GetMapping("/owners/{ownerId}")
 	public ModelAndView showOwner(@PathVariable("ownerId") int ownerId) {
 		ModelAndView mav = new ModelAndView("owners/ownerDetails");
