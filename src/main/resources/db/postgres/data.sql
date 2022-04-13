@@ -51,3 +51,11 @@ INSERT INTO visits VALUES (1, 7, '2010-03-04', 'rabies shot') ON CONFLICT (id) D
 INSERT INTO visits VALUES (2, 8, '2011-03-04', 'rabies shot') ON CONFLICT (id) DO NOTHING;
 INSERT INTO visits VALUES (3, 8, '2009-06-04', 'neutered') ON CONFLICT (id) DO NOTHING;
 INSERT INTO visits VALUES (4, 7, '2008-09-04', 'spayed') ON CONFLICT (id) DO NOTHING;
+
+--Spring Security
+INSERT INTO users(username,password,enabled) VALUES ('admin','{noop}admin', true) ON CONFLICT DO NOTHING;
+INSERT INTO users(username,password,enabled) VALUES ('user','{noop}user', true) ON CONFLICT DO NOTHING;
+
+INSERT INTO authorities (username, authority) VALUES ('admin', 'ROLE_ADMIN') ON CONFLICT DO NOTHING;
+INSERT INTO authorities (username, authority) VALUES ('admin', 'ROLE_USER') ON CONFLICT DO NOTHING;
+INSERT INTO authorities (username, authority) VALUES ('user', 'ROLE_USER') ON CONFLICT DO NOTHING;
